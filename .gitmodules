@@ -1,0 +1,18 @@
+[submodule "decentraland-asset-crawler"]
+	path = decentraland-asset-crawler
+	url = https://github.com/NFTopia-SZNS/decentraland-asset-crawler
+[submodule "thesandbox-asset-crawler"]
+	path = thesandbox-asset-crawler
+	url = https://github.com/NFTopia-SZNS/thesandbox-asset-crawler
+[submodule "cryptovoxels-asset-crawler"]
+	path = cryptovoxels-asset-crawler
+	url = https://github.com/NFTopia-SZNS/cryptovoxels-asset-crawler
+[submodule "solanatown-asset-crawler"]
+	path = solanatown-asset-crawler
+	url = https://github.com/NFTopia-SZNS/solanatown-asset-crawler
+[submodule "nftopia-backend"]
+	path = nftopia-backend
+	url = https://github.com/NFTopia-SZNS/nftopia-backend
+[submodule "nftopia-frontend"]
+	path = nftopia-frontend
+	url = https://github.com/NFTopia-SZNS/nftopia-frontend
