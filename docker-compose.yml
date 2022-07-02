@@ -1,15 +1,15 @@
 version: '3.8'
 services:
-  nftopia-frontend:
-    build: ./nftopia-frontend
-    restart: always
-    environment:
-      - NEXT_SERVER_PORT=${NFTOPIA_BACKEND_PORT}
-      - NEXT_SERVER_HOST=nftopia-backend
-    ports:
-      - '${NFTOPIA_FRONTEND_PORT}:${NFTOPIA_FRONTEND_PORT}'
-    depends_on:
-      - nftopia-backend
+  # nftopia-frontend:
+  #   build: ./nftopia-frontend
+  #   restart: always
+  #   environment:
+  #     - NEXT_SERVER_PORT=${NFTOPIA_BACKEND_PORT}
+  #     - NEXT_SERVER_HOST=nftopia-backend
+  #   ports:
+  #     - '${NFTOPIA_FRONTEND_PORT}:${NFTOPIA_FRONTEND_PORT}'
+  #   depends_on:
+  #     - nftopia-backend
 
   nftopia-backend:
     build: ./nftopia-backend
