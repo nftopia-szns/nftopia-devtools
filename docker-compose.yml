@@ -1,0 +1,155 @@
+version: '3.8'
+services:
+  nftopia-frontend:
+    build: ./nftopia-frontend
+    restart: always
+    environment:
+      - NEXT_SERVER_PORT=${NFTOPIA_BACKEND_PORT}
+      - NEXT_SERVER_HOST=nftopia-backend
+    ports:
+      - '${NFTOPIA_FRONTEND_PORT}:${NFTOPIA_FRONTEND_PORT}'
+    depends_on:
+      - nftopia-backend
+
+  nftopia-backend:
+    build: ./nftopia-backend
+    restart: always
+    environment:
+      - SERVER_PORT=${NFTOPIA_BACKEND_PORT}
+      - ES_CLOUD_ID=${ES_CLOUD_ID}
+      - ES_API_KEY=${ES_API_KEY}
+      - ES_NODE_HOST=elasticsearch
+      - ES_NODE_PORT=${ES_NODE_PORT}
+    ports:
+      - '${NFTOPIA_BACKEND_PORT}:${NFTOPIA_BACKEND_PORT}'
+    depends_on:
+      - decentraland-asset-crawler
+      - thesandbox-asset-crawler
+      - cryptovoxels-asset-crawler
+      - solanatown-asset-crawler
+
+  decentraland-asset-crawler:
+    build: ./decentraland-asset-crawler
+    restart: always
+    environment:
+      - API_URL=https://api.thegraph.com/subgraphs/name/decentraland/marketplace
+      - API_BATCH_SIZE=1000
+      - API_CONCURRENCY=5
+      - REFRESH_INTERVAL=60
+      - BLOCKCHAIN_CHAIN_ID=ethereum
+      - BLOCKCHAIN_NETWORK=mainnet
+      - POSTGRES_HOST=nftopia-postgres
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PWD}
+      - POSTGRES_DB_NAME=nftopia_assets
+      - POSTGRES_DB_SCHEMA=decentraland_mainnet
+      - ES_NODE_HOST=elasticsearch
+      - ES_NODE_PORT=${ES_NODE_PORT}
+    depends_on:
+      - nftopia-postgres
+      - elasticsearch
+
+  thesandbox-asset-crawler:
+    build: ./thesandbox-asset-crawler
+    restart: always
+    environment:
+      - API_URL=https://api.thegraph.com/subgraphs/name/pixowl/the-sandbox
+      - API_BATCH_SIZE=1000
+      - API_CONCURRENCY=5
+      - REFRESH_INTERVAL=60
+      - BLOCKCHAIN_CHAIN_ID=ethereum
+      - BLOCKCHAIN_NETWORK=mainnet
+      - POSTGRES_HOST=nftopia-postgres
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PWD}
+      - POSTGRES_DB_NAME=nftopia_assets
+      - POSTGRES_DB_SCHEMA=thesandbox_mainnet
+      - ES_NODE_HOST=elasticsearch
+      - ES_NODE_PORT=${ES_NODE_PORT}
+    depends_on:
+      - nftopia-postgres
+      - elasticsearch
+
+  cryptovoxels-asset-crawler:
+    build: ./cryptovoxels-asset-crawler
+    restart: always
+    environment:
+      - API_URL=https://api.thegraph.com/subgraphs/name/benjythebee/cryptovoxels-parcels
+      - API_BATCH_SIZE=1000
+      - API_CONCURRENCY=5
+      - REFRESH_INTERVAL=60
+      - BLOCKCHAIN_CHAIN_ID=ethereum
+      - BLOCKCHAIN_NETWORK=mainnet
+      - POSTGRES_HOST=nftopia-postgres
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PWD}
+      - POSTGRES_DB_NAME=nftopia_assets
+      - POSTGRES_DB_SCHEMA=cryptovoxels_mainnet
+      - ES_NODE_HOST=elasticsearch
+      - ES_NODE_PORT=${ES_NODE_PORT}
+    depends_on:
+      - nftopia-postgres
+      - elasticsearch
+
+  solanatown-asset-crawler:
+    build: ./solanatown-asset-crawler
+    restart: always
+    environment:
+      - BLOCKCHAIN_CHAIN_ID=solana
+      - BLOCKCHAIN_NETWORK=mainnet
+      - POSTGRES_HOST=nftopia-postgres
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PWD}
+      - POSTGRES_DB_NAME=nftopia_assets
+      - POSTGRES_DB_SCHEMA=solanatown_mainnet
+      - ES_NODE_HOST=elasticsearch
+      - ES_NODE_PORT=${ES_NODE_PORT}
+    depends_on:
+      - nftopia-postgres
+      - elasticsearch
+
+  nftopia-postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PWD}
+      - POSTGRES_DB=${POSTGRES_DB_NAME}
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.2.0
+  #   restart: always
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # internal network
+  #   depends_on:
+  #     - elasticsearch
+  #   ports:
+  #     - '${ES_KIBANA_PORT}:5601'
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    ports:
+      - '${ES_NODE_PORT}:9200'
+
+volumes:
+  db:
+    driver: local
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.1/24
