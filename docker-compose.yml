@@ -36,8 +36,8 @@ services:
       - API_BATCH_SIZE=1000
       - API_CONCURRENCY=5
       - REFRESH_INTERVAL=60
-      - BLOCKCHAIN_CHAIN_ID=ethereum
-      - BLOCKCHAIN_NETWORK=mainnet
+      - BLOCKCHAIN_NETWORK=ethereum
+      - BLOCKCHAIN_CHAIN_ID=mainnet
       - POSTGRES_HOST=nftopia-postgres
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -58,8 +58,8 @@ services:
       - API_BATCH_SIZE=1000
       - API_CONCURRENCY=5
       - REFRESH_INTERVAL=60
-      - BLOCKCHAIN_CHAIN_ID=ethereum
-      - BLOCKCHAIN_NETWORK=mainnet
+      - BLOCKCHAIN_NETWORK=ethereum
+      - BLOCKCHAIN_CHAIN_ID=mainnet
       - POSTGRES_HOST=nftopia-postgres
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -80,8 +80,8 @@ services:
       - API_BATCH_SIZE=1000
       - API_CONCURRENCY=5
       - REFRESH_INTERVAL=60
-      - BLOCKCHAIN_CHAIN_ID=ethereum
-      - BLOCKCHAIN_NETWORK=mainnet
+      - BLOCKCHAIN_NETWORK=ethereum
+      - BLOCKCHAIN_CHAIN_ID=mainnet
       - POSTGRES_HOST=nftopia-postgres
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -98,8 +98,8 @@ services:
     build: ./solanatown-asset-crawler
     restart: always
     environment:
-      - BLOCKCHAIN_CHAIN_ID=solana
-      - BLOCKCHAIN_NETWORK=mainnet
+      - BLOCKCHAIN_NETWORK=solana
+      - BLOCKCHAIN_CHAIN_ID=mainnet
       - POSTGRES_HOST=nftopia-postgres
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -108,6 +108,8 @@ services:
       - POSTGRES_DB_SCHEMA=solanatown_mainnet
       - ES_NODE_HOST=elasticsearch
       - ES_NODE_PORT=${ES_NODE_PORT}
+      - MORALIS_SERVER_URL=${MORALIS_SERVER_URL}
+      - MORALIS_MASTER_KEY=${MORALIS_MASTER_KEY}
     depends_on:
       - nftopia-postgres
       - elasticsearch
